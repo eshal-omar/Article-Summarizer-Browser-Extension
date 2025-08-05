@@ -8,6 +8,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "GET_SUMMARY") {
+    // console.log("Article text to summarize:", articleText); 
+    //     console.log("Article text length:", articleText.length); 
+        
+        if (!articleText || articleText.length < 100) {
+            sendResponse({ summary: "No article text found or text too short." });
+            return;
+        }
     fetch("https://article-extractor-and-summarizer.p.rapidapi.com/summarize-text", {
       method: "POST",
       headers: {
@@ -20,9 +27,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         text: articleText
       })
     })
-      .then(res => res.json())
+      .then(res => {
+            // console.log("Response status:", res.status); 
+            return res.json();
+        })
       .then(data => {
-  console.log("API Response:", data);
+//   console.log("API Response:", data);
     
     
     let summary;
